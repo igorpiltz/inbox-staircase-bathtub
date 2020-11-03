@@ -3,6 +3,7 @@ package inkorgstrappbadkar.controller;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import inkorgstrappbadkar.model.Bathtub;
 import inkorgstrappbadkar.model.Inbox;
@@ -76,6 +77,7 @@ public class Controller {
 				view.showStatus(model);
 				view.addChoice(ViewAction.ADDEVENT);
 				view.addChoice(ViewAction.ADDINBOX);
+				view.addChoice(ViewAction.SHOWINBOXES);
 				view.addChoice(ViewAction.QUIT);
 				view.showChoices();
 				
@@ -121,6 +123,8 @@ public class Controller {
 	public void registerEvent(int inboxIndex, String event) {
 		model.registerEvent(inboxIndex, event);
 	}
-	
 
+	public List<Inbox> getAllInboxes() {
+		return model.getInboxList();
+	}
 }

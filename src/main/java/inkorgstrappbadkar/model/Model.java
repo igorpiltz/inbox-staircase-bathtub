@@ -76,5 +76,9 @@ public class Model implements java.io.Serializable {
 			pointsToAward = 1;
 		}
 	}
+	
+	public List<Inbox> getInboxList() {
+		return inboxList;
+	}
 
 }

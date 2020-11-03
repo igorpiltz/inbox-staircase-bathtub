@@ -11,6 +11,7 @@ import java.util.List;
 
 import inkorgstrappbadkar.controller.Controller;
 import inkorgstrappbadkar.controller.ViewAction;
+import inkorgstrappbadkar.model.Inbox;
 import inkorgstrappbadkar.model.Model;
 
 /**
@@ -64,6 +65,11 @@ public class CommandLineView implements View {
 			
 			if (choices.get(index) == ViewAction.STARTGAME) {
 				System.out.println("" + (index+1) + ". Start a new game.");
+				foundChoice = true;
+			}
+			
+			if (choices.get(index) == ViewAction.SHOWINBOXES) {
+				System.out.println("" + (index+1) + ". Show all inboxes.");
 				foundChoice = true;
 			}
 			
@@ -161,6 +167,15 @@ public class CommandLineView implements View {
 			
 		}
 	
+		if (action == ViewAction.SHOWINBOXES) {
+			List<Inbox> list = controller.getAllInboxes();
+			for (int index = 0; index < list.size(); index++) {
+				System.out.println("" + (index+1) + ". " + list.get(index));
+			}
+			System.out.println("");
+			
+		}
+		
 		
 		if (action == ViewAction.QUIT) {
 			controller.endSession();				
