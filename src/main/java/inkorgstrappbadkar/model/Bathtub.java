@@ -24,6 +24,9 @@ public class Bathtub implements java.io.Serializable {
 	private List<PointsEvent> pointsEvents = new ArrayList<PointsEvent>();
 	private List<BathtubPeriod> periodList = new ArrayList<BathtubPeriod>();
 	
+	public static final double acceleration = 0.1;
+	
+	
 	
 	private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -78,13 +81,44 @@ public class Bathtub implements java.io.Serializable {
 			if (event.getTime().after(currentPeriod.getStart()) && event.getTime().before(currentPeriod.getEnd()))
 				currentPeriod.addEvent(event);
 			else {
-				Date startDate = new Date(currentPeriod.getEnd().getTime()-1);	// inga hål i tidslinjen
+				Date startDate = new Date(currentPeriod.getEnd().getTime());	// inga hål i tidslinjen
 				Date endDate = new Date(startDate.getTime() + period*24*60*60*1000);
 				currentPeriod = new BathtubPeriod(startDate, endDate);
 				periodList.add(currentPeriod);
 				
 			}
 		}
+		
+		// Nu har vi lagt alla Events i BathtubPeriods. 
+		// Då är det bara att beräkna parametrar samma som calc-dokumentet. 
+		for (int index = 0; index < periodList.size(); index++) {
+			BathtubPeriod previous = null;
+			if (index == 0) {
+				previous = new BathtubPeriod(new Date(), new Date());
+				
+				
+			} else previous = periodList.get(index);
+			
+			
+			BathtubPeriod period = periodList.get(index);
+			
+			// Borde göra eller RunOff
+			// Den gamla + gammal Borde-Diff eller RunOffDiff
+			period.setRunOff(previous.getRunOff() - previous.getBuffer()*acceleration);
+			
+			// Buffer före diff eller bara Buffer
+			// förra bufferEfterDiff + dennas poäng - dennas runOff
+			period.setBuffer(previous.getBufferAfterDiff() + period.totalPoints() - period.getRunOff());
+			
+			// BufferAfterDiff
+			// Pull off 10% off Buffer or = Buffer - Buffer*0.1
+			period.setBufferAfterDiff(period.getBuffer() - period.getBuffer()*acceleration);
+			
+			
+		}
+		
+		
+		
 		
 	}
 	
