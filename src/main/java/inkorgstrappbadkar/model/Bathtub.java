@@ -163,5 +163,9 @@ public class Bathtub implements java.io.Serializable {
 	public String toString() {
 		return "Bathtub " + format.format(start);
 	}
+	
+	public List<BathtubPeriod> getPeriods() {
+		return periodList;
+	}
 
 }
