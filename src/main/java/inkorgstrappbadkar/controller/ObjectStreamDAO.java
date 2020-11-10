@@ -2,6 +2,9 @@ package inkorgstrappbadkar.controller;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
 import java.util.Date;
 
 import inkorgstrappbadkar.model.Model;
@@ -10,16 +13,23 @@ import util.serial.ObjectStreamUtil;
 
 public class ObjectStreamDAO implements DAO {
 
-	private String filename, fileprefix, filesuffix;
+	private String filename, directory, fileprefix, filesuffix;
 	private Model model = null;
 	
 	
 	public ObjectStreamDAO() throws ClassNotFoundException, IOException {
 		
-		fileprefix = "./data/game";
+		directory = "./data/";
+		fileprefix = "game";
 		filesuffix = ".dat";
 		
-		filename = fileprefix + filesuffix;
+		
+		if (Files.notExists(Paths.get(directory))) {
+			Files.createDirectory(Paths.get(directory));
+		}
+		
+		
+		filename = directory + fileprefix + filesuffix;
 		
 		try {
 			model = (Model)ObjectStreamUtil.readObject(filename);
