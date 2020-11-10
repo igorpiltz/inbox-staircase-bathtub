@@ -33,6 +33,7 @@ public class ObjectStreamDAO implements DAO {
 		
 		try {
 			model = (Model)ObjectStreamUtil.readObject(filename);
+			model.checkConsistency();
 		} catch (FileNotFoundException ex) {
 			model = new Model(); 
 		}

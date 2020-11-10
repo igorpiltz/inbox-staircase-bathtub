@@ -164,8 +164,23 @@ public class Bathtub implements java.io.Serializable {
 		return "Bathtub " + format.format(start);
 	}
 	
+	public String toStringLong() {
+		StringBuffer buf = new StringBuffer();
+		
+		buf.append("Bathtub " + format.format(start));
+		
+		for (int index = 0; index < periodList.size(); index++) {
+			buf.append("" + (index+1) + ". " + periodList.get(index).toString() + "\n");
+		}
+		
+		return buf.toString();
+		
+	}
+	
 	public List<BathtubPeriod> getPeriods() {
 		return periodList;
 	}
-
+	
+	
+	
 }

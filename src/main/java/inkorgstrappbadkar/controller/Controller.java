@@ -127,4 +127,8 @@ public class Controller {
 	public List<Inbox> getAllInboxes() {
 		return model.getInboxList();
 	}
+
+	public Model getModel() {
+		return model;
+	}
 }

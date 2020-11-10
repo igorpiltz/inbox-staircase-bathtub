@@ -14,6 +14,16 @@ public class Model implements java.io.Serializable {
 	private int pointsToAward;
 	
 
+	public void checkConsistency() {
+		if (inboxList == null)
+			inboxList = new ArrayList<Inbox>();
+		if (inboxToProcessList == null)
+			inboxToProcessList = new ArrayList<Inbox>();
+	}
+
+	
+	
+	
 	public String toString() {
 				
 		if (bathtub == null)

@@ -169,10 +169,13 @@ public class CommandLineView implements View {
 	
 		if (action == ViewAction.SHOWINBOXES) {
 			List<Inbox> list = controller.getAllInboxes();
+						
+			System.out.println("**** Inbox List ****");
 			for (int index = 0; index < list.size(); index++) {
 				System.out.println("" + (index+1) + ". " + list.get(index));
 			}
 			System.out.println("");
+			System.out.println(controller.getModel().getBathtub().toStringLong());
 			
 		}
 		

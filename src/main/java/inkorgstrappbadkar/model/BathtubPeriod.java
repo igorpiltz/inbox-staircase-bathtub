@@ -1,5 +1,6 @@
 package inkorgstrappbadkar.model;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +19,17 @@ public class BathtubPeriod implements java.io.Serializable {
 	private double buffer = 0;
 	private double bufferAfterDiff = 0;
 
+	private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	
+	
+	public String toString() {
+		return "BathtubPeriod " + format.format(start) 
+		+ " (RO " + runOff
+		+ ", PO " + totalPoints()
+		+ ", BU " + buffer 
+		+ ", BUAD " + bufferAfterDiff + ")"; 
+	}
+	
 	
 	public int totalPoints() {
 		int totalPoints = 0; 
