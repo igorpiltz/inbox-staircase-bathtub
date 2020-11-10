@@ -50,7 +50,7 @@ public class ObjectStreamDAO implements DAO {
 	@Override
 	public void persist() throws FileNotFoundException, IOException {
 		ObjectStreamUtil.writeObject(filename, model);
-		ObjectStreamUtil.writeObject(fileprefix + (new Date()).getTime() + filesuffix, model);
+		ObjectStreamUtil.writeObject(directory + fileprefix + (new Date()).getTime() + filesuffix, model);
 				
 	}
 
