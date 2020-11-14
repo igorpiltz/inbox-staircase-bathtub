@@ -3,7 +3,7 @@ package inkorgstrappbadkar.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Model implements java.io.Serializable {
+public class Model extends mvctemplate.model.Model implements java.io.Serializable {
 	/**
 	 * 
 	 */
