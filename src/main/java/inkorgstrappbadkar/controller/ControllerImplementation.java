@@ -1,12 +1,12 @@
 package inkorgstrappbadkar.controller;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
 
 import mvctemplate.controller.Controller;
+import mvctemplate.dao.DAO;
 import mvctemplate.dao.ObjectStreamDAO;
 import mvctemplate.view.CommandLineView;
 import mvctemplate.view.View;
@@ -16,126 +16,174 @@ import inkorgstrappbadkar.model.Model;
 import util.parser.Callable;
 import util.parser.ChoiceToken;
 import util.parser.Command;
-import util.parser.FloatToken;
 import util.parser.IntegerToken;
+import util.parser.RestOfLineToken;
 import util.parser.StringToken;
 import util.parser.Token;
 
 public class ControllerImplementation {
 	
+	
 	private Controller controller;
 	private Model model;
 	private View view;
+	private DAO dao;
 
 	public ControllerImplementation(Controller controller) {
 		
 		this.controller = controller;
 		model = (inkorgstrappbadkar.model.Model)controller.getModel();
 		view = controller.getView();
+		dao = controller.getDAO();
 		
 		
-		Command command;
-		ChoiceToken choiceToken;
 		
 		
 		// Startar ett nytt spel
 		// start game period goal  
-		command = new Command();
-		command.add(new StringToken("start"));
-		command.add(new StringToken("game"));
-		command.add(new IntegerToken());
-		command.add(new IntegerToken());
-		command.addCallable(new Callable() {
-			public void exec(List<Token> tokens) {
-				startGame(tokens);
-			}});
-		controller.add(command);
-				
+		controller.add(new StartGame());		
 		
+		// Add inbox-kommandot
+		// Lägger till ett event
+		// add inbox inbox-name
+		controller.add(new AddInbox());
 		
 		// Add event-kommandot
 		// Lägger till ett event  
-		command = new Command();
-		command.add(new StringToken("add"));
-		command.add(new StringToken("event"));
-		command.addCallable(new Callable() {
-			public void exec(List<Token> tokens) {
-				addEvent(tokens);
-			}});
-		controller.add(command);
+		// add event [InboxNumber] [EventString]
+		controller.add(new AddEvent());
 		
-		
-		// Add event-kommandot
-		// Lägger till ett event  
-		command = new Command();
-		command.add(new StringToken("add"));
-		command.add(new StringToken("secondary"));
-		command.addCallable(new Callable() {
-			public void exec(List<Token> tokens) {
-				addSecondaryEvent(tokens);
-			}});
-		controller.add(command);
-		
-		
-				
-
+		controller.add(new ShowInboxes());
+		controller.add(new ExitProgram());
 
 	}
 	
 	
 
-	protected void startGame(List<Token> tokens) {
-		// start game period goal
+
+	
+	/**
+	 * start game period goal
+	 * 
+	 * @author igor
+	 *
+	 */
+	public class StartGame extends Command implements Callable {
+		public StartGame() {
+			add(new StringToken("start"));
+			add(new StringToken("game"));
+			add(new IntegerToken());
+			add(new IntegerToken());
+			addCallable(this);
+		}
 		
-		dao.getModel().add(new Bathtub(date, period, goal)); 
-		
-		
-		
+		public void exec(List<Token> tokens) {
+			model.add(new Bathtub(
+					new Date(), 
+					((IntegerToken)tokens.get(2)).getNumber(), 
+					((IntegerToken)tokens.get(3)).getNumber()));
+		}
 		
 	}
 
-	public void addInbox(String inboxName) {
+	
+	/**
+	 * add inbox inbox-name
+	 * @author igor
+	 *
+	 */
+	public class AddInbox extends Command implements Callable {
+		public AddInbox() {
+			add(new StringToken("add"));
+			add(new StringToken("inbox"));
+			add(new RestOfLineToken());
+			
+			addCallable(this);
+		}
 		
-		dao.getModel().add(new Inbox(inboxName));
-		
-	}
-	
-	public void registerEvent(int inboxIndex, String event) {
-		model.registerEvent(inboxIndex, event);
-	}
-	
-	
-	public void endSession() throws FileNotFoundException, IOException {
-		// TODO Auto-generated method stub
-		dao.persist();
-		System.exit(0);
+		public void exec(List<Token> tokens) {
+			model.add(new Inbox(tokens.get(2).getParsedString()));
+		}
 		
 	}
 
-
-	public void endGame() throws FileNotFoundException, IOException {
-		dao.persist();
-				
+	
+	/**
+	 * add event [InboxNumber] [EventString]
+	 * @author igor
+	 *
+	 */
+	public class AddEvent extends Command implements Callable {
+		public AddEvent() {
+			add(new StringToken("add"));
+			add(new StringToken("event"));
+			add(new IntegerToken());
+			add(new RestOfLineToken());
+			
+			addCallable(this);
+		}
+		
+		public void exec(List<Token> tokens) {
+			throw new AssertionError();
+		}
+		
 	}
 	
+	public class ShowInboxes extends Command implements Callable {
+		public ShowInboxes() {
+			add(new StringToken("show"));
+			add(new StringToken("inboxes"));
+			
+			addCallable(this);
+		}
+		
+		public void exec(List<Token> tokens) {
+			throw new AssertionError();
+		}
+	}
+	
+	
+	public class ExitProgram extends Command implements Callable {
+		public ExitProgram() {
+			ChoiceToken token = new ChoiceToken();
+			token.add("quit");
+			token.add("exit");
+			
+			add(token);
+					
+			addCallable(this);
+		}
+		
+		public void exec(List<Token> tokens) {
+			try {
+				dao.persist();
+			} catch (IOException e) {
+
+				view.messageToUser(e.toString());
+				return; 
+			}
+			System.exit(0);
+		}
+	}
+
+		
 	
 	public static void main(String args[]) throws IOException, ClassNotFoundException {
 		
 		Controller controller = null;
+		View view = new CommandLineView();
 		
-		controller = new Controller(new ObjectStreamDAO());
+		
+		controller = new Controller(new ObjectStreamDAO(), view);
 		
 		ControllerImplementation controllerImplementation = new ControllerImplementation(controller);
+			
 		
-		View view = new CommandLineView(controller);
-		controller.setView(view);
-		
-		view.run();
+		controllerImplementation.run();
 		
 	}
 
 	private void run() throws IOException {
-		// TODO Auto-generated method stub
 		
 		view.startMessage();
 		
@@ -143,15 +191,15 @@ public class ControllerImplementation {
 			
 			
 			if (model.getBathtub() == null) {
-				view.addChoice(ViewAction.STARTGAME);
-				view.addChoice(ViewAction.QUIT);
+				view.addChoice(new StartGame());
+				view.addChoice(new ExitProgram());
 				view.showChoices();
 			} else {
 				view.showStatus(model);
-				view.addChoice(ViewAction.ADDEVENT);
-				view.addChoice(ViewAction.ADDINBOX);
-				view.addChoice(ViewAction.SHOWINBOXES);
-				view.addChoice(ViewAction.QUIT);
+				view.addChoice(new AddEvent());
+				view.addChoice(new AddInbox());
+				view.addChoice(new ShowInboxes());
+				view.addChoice(new ExitProgram());
 				view.showChoices();
 				
 			}
@@ -162,7 +210,4 @@ public class ControllerImplementation {
 		}
 		
 	}
-
-	
-
 }

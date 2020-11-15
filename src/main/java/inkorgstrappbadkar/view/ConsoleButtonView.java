@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import inkorgstrappbadkar.controller.ViewAction;
 import inkorgstrappbadkar.model.Inbox;
+import mvctemplate.model.Model;
+import mvctemplate.view.View;
+import util.parser.Command;
+import util.parser.UserInterruptException;
 
 /**
  * En View där vi väljer kommando med hjälp av en siffra och sedan frågar vad vi vill i konsolen.  
@@ -14,11 +17,11 @@ import inkorgstrappbadkar.model.Inbox;
  *
  */
 
-public class ConsoleButtonView {
-	
-	
-	public ConsoleButtonView() {
-		if (action == ViewAction.ADDINBOX) {
+public class ConsoleButtonView implements View {
+	/*
+	 *
+	 * 
+	 * if (action == ViewAction.ADDINBOX) {
 			// Add an inbox
 					
 			System.out.println("Add an inbox.");
@@ -103,10 +106,19 @@ public class ConsoleButtonView {
 			controller.endSession();				
 		}
 
+	 * 
+	 * 
+	 * 
+	 */
+	
+	
+	
+	public ConsoleButtonView() {
+		
 	}
 	
-	public void showChoices() throws IOException {
-		
+	public void showChoices() {
+		/*
 		for (int index = 0; index < choices.size(); index++) {
 			boolean foundChoice = false;
 			if (choices.get(index) == ViewAction.QUIT) {
@@ -247,6 +259,57 @@ public class ConsoleButtonView {
 		
 		
 		choices.clear();
+		
+		*/
+	}
+
+	@Override
+	public void messageToUser(Object actualString) {
+		// TODO Auto-generated method stub
+		throw new AssertionError();
+		
+	}
+
+	@Override
+	public String askQuestion(Object question) throws IOException, UserInterruptException {
+		// TODO Auto-generated method stub
+		
+		return null;
+	}
+
+	@Override
+	public boolean askYesnoQuestion(String question) throws IOException, UserInterruptException {
+		// TODO Auto-generated method stub
+		
+		return false;
+	}
+
+	@Override
+	public void startMessage() {
+		// TODO Auto-generated method stub
+		throw new AssertionError();
+		
+	}
+
+	@Override
+	public void addChoice(Command command) {
+		// TODO Auto-generated method stub
+		throw new AssertionError();
+		
+	}
+
+	@Override
+	public void showStatus(Model model) {
+		// TODO Auto-generated method stub
+		throw new AssertionError();
+		
+	}
+
+	@Override
+	public void printControlScheme(List<Command> commandList) {
+		// TODO Auto-generated method stub
+		throw new AssertionError();
+		
 	}
 
 	
