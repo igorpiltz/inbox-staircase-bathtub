@@ -117,7 +117,8 @@ public class ConsoleButtonView implements View {
 		
 	}
 	
-	public void showChoices() {
+	public String showChoices() {
+		return null;
 		/*
 		for (int index = 0; index < choices.size(); index++) {
 			boolean foundChoice = false;

@@ -20,6 +20,8 @@ import util.parser.IntegerToken;
 import util.parser.RestOfLineToken;
 import util.parser.StringToken;
 import util.parser.Token;
+import util.parser.UnknownCommandException;
+import util.parser.UserInterruptException;
 
 public class ControllerImplementation {
 	
@@ -138,7 +140,11 @@ public class ControllerImplementation {
 		}
 		
 		public void exec(List<Token> tokens) {
-			throw new AssertionError();
+			List<Inbox> list = model.getInboxList();
+			
+			for (int index = 0; index < list.size(); index++) {
+				view.messageToUser(list.get(index));
+			}
 		}
 	}
 	
@@ -193,14 +199,34 @@ public class ControllerImplementation {
 			if (model.getBathtub() == null) {
 				view.addChoice(new StartGame());
 				view.addChoice(new ExitProgram());
-				view.showChoices();
+				String command = view.showChoices();
+				try {
+					controller.processInput(command);
+				} catch (UnknownCommandException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (UserInterruptException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			} else {
 				view.showStatus(model);
 				view.addChoice(new AddEvent());
 				view.addChoice(new AddInbox());
 				view.addChoice(new ShowInboxes());
 				view.addChoice(new ExitProgram());
-				view.showChoices();
+				String command = view.showChoices();
+				try {
+					controller.processInput(command);
+				} catch (UnknownCommandException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (UserInterruptException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 				
 			}
 
