@@ -1,6 +1,7 @@
 package inkorgstrappbadkar.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Inbox implements java.io.Serializable {
@@ -9,7 +10,7 @@ public class Inbox implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String name;
-	private List<ProcessedEvent> processedTo = new ArrayList<ProcessedEvent>();
+	private List<ProcessedEvent> events = new ArrayList<ProcessedEvent>();
 	
 	public Inbox(String name) {
 		this.name = name;
@@ -32,29 +33,40 @@ public class Inbox implements java.io.Serializable {
 	/**
 	 * @return the processedTo
 	 */
-	public List<ProcessedEvent> getProcessedTo() {
-		return processedTo;
+	public List<ProcessedEvent> getEvents() {
+		return events;
 	}
 
 	/**
 	 * @param processedTo the processedTo to set
 	 */
-	public void setProcessedTo(List<ProcessedEvent> processedTo) {
-		this.processedTo = processedTo;
+	public void setEvents(List<ProcessedEvent> events) {
+		this.events = events;
 	}
 
 	public String toString() {
-		if (processedTo.size() > 0)
-			return name + " : " + processedTo.get(processedTo.size() - 1);
+		if (events.size() > 0)
+			return name + " : " + events.get(events.size() - 1);
 		else return name + " : ";
 	}
 
 	public void addEvent(String event) {
-		processedTo.add(new ProcessedEvent(event));
+		events.add(new ProcessedEvent(event));
 	}
 
-	public void add(String event) {
-		processedTo.add(new ProcessedEvent(event));
+	
+	public Date lastEventDate() {
+		// TODO Auto-generated method stub
+		if (events.size() == 0)
+			return null;
+		
+		Date lastDate = events.get(0).getTime();
+		for (int index = 1; index < events.size(); index++) {
+			if (lastDate.before(events.get(index).getTime()))
+				lastDate = events.get(index).getTime();
+		}
+
+		return lastDate;
 	}
 	
 }

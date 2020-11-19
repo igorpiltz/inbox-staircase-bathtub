@@ -17,11 +17,15 @@ public class ProcessingRound implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private List<Inbox> inboxList;
 	private Date start;
+	
 
-	public ProcessingRound(List<Inbox> inboxList) {
-		this.inboxList = inboxList;
-		start = new Date();
-		
+	public ProcessingRound(Date start) {
+		this.start = start;
+	}
+
+
+	public Date getStart() {
+		return start;
 	}
 
 }

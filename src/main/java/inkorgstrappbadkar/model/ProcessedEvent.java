@@ -19,4 +19,8 @@ public class ProcessedEvent implements java.io.Serializable {
 		return upto;
 	}
 
+	public Date getTime() {
+		return when;
+	}
+
 }

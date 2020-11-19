@@ -11,6 +11,7 @@ import mvctemplate.dao.ObjectStreamDAO;
 import mvctemplate.view.CommandLineView;
 import mvctemplate.view.View;
 import inkorgstrappbadkar.model.Bathtub;
+import inkorgstrappbadkar.model.Game;
 import inkorgstrappbadkar.model.Inbox;
 import inkorgstrappbadkar.model.Model;
 import util.parser.Callable;
@@ -34,25 +35,22 @@ public class ControllerImplementation {
 	public ControllerImplementation(Controller controller) {
 		
 		this.controller = controller;
-		model = (inkorgstrappbadkar.model.Model)controller.getModel();
+		try {
+			model = (inkorgstrappbadkar.model.Model)controller.getModel();
+		} catch (ClassCastException e) {
+			model = new Model();
+			controller.setModel(model);
+		}
 		view = controller.getView();
 		dao = controller.getDAO();
 		
 		
 		
 		
-		// Startar ett nytt spel
-		// start game period goal  
 		controller.add(new StartGame());		
 		
-		// Add inbox-kommandot
-		// Lägger till ett event
-		// add inbox inbox-name
 		controller.add(new AddInbox());
 		
-		// Add event-kommandot
-		// Lägger till ett event  
-		// add event [InboxNumber] [EventString]
 		controller.add(new AddEvent());
 		
 		controller.add(new ShowInboxes());
@@ -80,7 +78,7 @@ public class ControllerImplementation {
 		}
 		
 		public void exec(List<Token> tokens) {
-			model.add(new Bathtub(
+			model.startGame(new Game(
 					new Date(), 
 					((IntegerToken)tokens.get(2)).getNumber(), 
 					((IntegerToken)tokens.get(3)).getNumber()));
@@ -104,7 +102,7 @@ public class ControllerImplementation {
 		}
 		
 		public void exec(List<Token> tokens) {
-			model.add(new Inbox(tokens.get(2).getParsedString()));
+			((inkorgstrappbadkar.model.Game)model.getCurrentGame()).add(new Inbox(tokens.get(2).getParsedString()));
 		}
 		
 	}
@@ -126,7 +124,8 @@ public class ControllerImplementation {
 		}
 		
 		public void exec(List<Token> tokens) {
-			throw new AssertionError();
+			((inkorgstrappbadkar.model.Game)model.getCurrentGame())
+				.registerEvent(((IntegerToken)tokens.get(2)).getNumber(), tokens.get(3).getParsedString());
 		}
 		
 	}
@@ -140,7 +139,7 @@ public class ControllerImplementation {
 		}
 		
 		public void exec(List<Token> tokens) {
-			List<Inbox> list = model.getInboxList();
+			List<Inbox> list = ((inkorgstrappbadkar.model.Game)model.getCurrentGame()).getInboxList();
 			
 			for (int index = 0; index < list.size(); index++) {
 				view.messageToUser(list.get(index));
@@ -196,7 +195,10 @@ public class ControllerImplementation {
 		while(true) {
 			
 			
-			if (model.getBathtub() == null) {
+			if (model.getCurrentGame() == null) {
+				
+				view.showStatus(model);
+				
 				view.addChoice(new StartGame());
 				view.addChoice(new ExitProgram());
 				String command = view.showChoices();

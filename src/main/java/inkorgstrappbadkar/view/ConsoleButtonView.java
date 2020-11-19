@@ -313,6 +313,13 @@ public class ConsoleButtonView implements View {
 		
 	}
 
+	@Override
+	public void initialize() {
+		// TODO Auto-generated method stub
+		throw new AssertionError();
+		
+	}
+
 	
 
 }
